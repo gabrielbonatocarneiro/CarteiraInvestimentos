@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using CarteiraInvestimentos.Adapters;
 using CarteiraInvestimentos.Dtos;
@@ -13,8 +14,8 @@ namespace CarteiraInvestimentos.Controllers
   public class CotacaoAcaoController : ControllerBase
   {
     [HttpGet]
-    [Route("yahoo-finance/{codigoAcao}")]
-    public async Task<ActionResult<CotacaoAcaoYahooFinanceDto>> GetCotacaoYahooFinance(string codigoAcao)
+    [Route("yahoo-finance/{codigoAcao}")]    
+    public async Task<ActionResult<CotacaoAcaoYahooFinanceDto>> GetCotacaoYahooFinance([DefaultValue("NUBR33")] string codigoAcao)
     {
       var responseBodyContacao = await YahooFinanceService.GetCotacao(codigoAcao);
 
