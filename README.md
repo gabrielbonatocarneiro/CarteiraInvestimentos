@@ -3,13 +3,13 @@
 dotnet run
 
 # Via Docker
-docker-compose
+docker-compose up --build -d
 
 # Via VS Code
 F5
 ```
 
-### Comandos executados pra o Projeto
+### Comandos executados para criar e atualizar o Projeto durante o desenvolemento
 ```bash
 # Criar o projeto
 dotnet new webapi -n CarteiraInvestimentos
