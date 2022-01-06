@@ -1,19 +1,22 @@
 ### Rodar projeto
 ```bash
-dotnet run
+cd CarteiraInvestimentos.Api && dotnet run
 
 # Via Docker
-docker-compose up --build -d
+cd CarteiraInvestimentos.Api && docker-compose up --build -d
 
 # Via VS Code
-F5
+CarteiraInvestimentos.Api > F5
 
 # Rodar projeto local, somente com o container do mongo executando
-appsettings.json > MongoDbSettings > Host > "localhost"
-
+CarteiraInvestimentos.Api > appsettings.json > MongoDbSettings > Host > "localhost"
 docker-compose -f docker-compose-mongo.yml up --build -d
+CarteiraInvestimentos.Api > F5
+```
 
-F5
+### Rodar os testes
+```bash
+cd CarteiraInvestimentos.UnitTests && dotnet test
 ```
 
 ## Docker run Mongo
@@ -37,6 +40,15 @@ dotnet add package MongoDB.Driver
 
 # Health Check MongoDB
 dotnet add package AspNetCore.HealthChecks.MongoDb
+
+# Testes unitários
+dotnet new xunit -n CarteiraInvestimentos.UnitTests
+
+# Dentro das pasta CarteiraInvestimentos.UnitTests
+dotnet add reference ../CarteiraInvestimentos.Api/CarteiraInvestimentos.Api.csproj
+dotnet add package Microsoft.Extensions.Logging.Abstractions
+dotnet add package moq
+dotnet add package FluentAssertions
 ```
 
 
