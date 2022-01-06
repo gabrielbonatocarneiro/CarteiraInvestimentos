@@ -9,6 +9,11 @@ docker-compose up --build -d
 F5
 ```
 
+## Docker run Mongo
+```bash
+docker run -d --rm --name mongocarteirainvestimentos -p 27019:27017 -v mongodbdata:/data/db mongo
+```
+
 ### Comandos executados para criar e atualizar o Projeto durante o desenvolemento
 ```bash
 # Criar o projeto
@@ -19,6 +24,9 @@ dotnet dev-certs https --trust
 
 # Pacote para converter o json recebido da api do yahoo finance
 dotnet add package Newtonsoft.Json
+
+# MongoDB
+dotnet add package MongoDB.Driver
 ```
 
 

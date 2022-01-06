@@ -1,5 +1,3 @@
-using System;
-
 namespace CarteiraInvestimentos.Dtos
 {
   public record CotacaoAcaoYahooFinanceDto

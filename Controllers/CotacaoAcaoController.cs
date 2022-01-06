@@ -1,4 +1,3 @@
-using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using CarteiraInvestimentos.Adapters;
@@ -19,7 +18,14 @@ namespace CarteiraInvestimentos.Controllers
     {
       var responseBodyContacao = await YahooFinanceService.GetCotacao(codigoAcao);
 
-      return YahooFinanceAdapter.Handle(responseBodyContacao);
+      var cotacao = YahooFinanceAdapter.Handle(responseBodyContacao);
+
+      if (cotacao is null)
+      {
+        return NotFound("Código da ação inválido. Não foi possível obter a cotação da ação. Favor informar o código correto.");
+      }
+
+      return cotacao;
     }
   }
 }

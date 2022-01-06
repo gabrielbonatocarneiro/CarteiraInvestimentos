@@ -5,6 +5,7 @@ using System;
 using CarteiraInvestimentos.Interfaces;
 using System.Linq;
 using CarteiraInvestimentos.Dtos;
+using System.Threading.Tasks;
 
 namespace CarteiraInvestimentos.Controllers
 {
@@ -13,25 +14,26 @@ namespace CarteiraInvestimentos.Controllers
   [Produces("application/json")]
   public class AcoesController : ControllerBase
   {
-    private readonly InMemAcoesInterface repositoryInterface;
+    private readonly AcoesRepositoryInterface repositoryInterface;
 
-    public AcoesController(InMemAcoesInterface repositoryInterface)
+    public AcoesController(AcoesRepositoryInterface repositoryInterface)
     {
       this.repositoryInterface = repositoryInterface;
     }
 
     [HttpGet]
-    public IEnumerable<AcaoDto> GetAcoes()
+    public async Task<IEnumerable<AcaoDto>> GetAcoesAsync()
     {
-      var acoes = repositoryInterface.GetAcoes().Select(acao => acao.AsDto());
+      var acoes = (await repositoryInterface.GetAcoesAsync())
+        .Select(acao => acao.AsDto());
 
       return acoes;
     }
 
     [HttpGet("{id}")]
-    public ActionResult<AcaoDto> GetAcao(Guid id)
+    public async Task<ActionResult<AcaoDto>> GetAcaoAysnc(Guid id)
     {
-      var acao = repositoryInterface.GetAcao(id);
+      var acao = await repositoryInterface.GetAcaoAsync(id);
 
       if (acao is null)
       {
@@ -42,7 +44,7 @@ namespace CarteiraInvestimentos.Controllers
     }
 
     [HttpPost]
-    public ActionResult<AcaoDto> CreateAcao(CreateAcaoDto acaoDto)
+    public async Task<ActionResult<AcaoDto>> CreateAcaoAsync(CreateAcaoDto acaoDto)
     {
       Acao acao = new()
       {
@@ -52,15 +54,15 @@ namespace CarteiraInvestimentos.Controllers
         CreatedDate = DateTimeOffset.UtcNow
       };
 
-      repositoryInterface.CreateAcao(acao);
+      await repositoryInterface.CreateAcaoAsync(acao);
 
-      return CreatedAtAction(nameof(GetAcao), new { id = acao.Id }, acao.AsDto());
+      return CreatedAtAction(nameof(GetAcaoAysnc), new { id = acao.Id }, acao.AsDto());
     }
 
     [HttpPut("{id}")]
-    public ActionResult UpdateAcao(Guid id, UpdateAcaoDto acaoDto)
+    public async Task<ActionResult> UpdateAcaoAsync(Guid id, UpdateAcaoDto acaoDto)
     {
-      var existingAcao = repositoryInterface.GetAcao(id);
+      var existingAcao = await repositoryInterface.GetAcaoAsync(id);
 
       if (existingAcao is null)
       {
@@ -73,22 +75,22 @@ namespace CarteiraInvestimentos.Controllers
         RazaoSocialEmpresa = acaoDto.RazaoSocialEmpresa
       };
 
-      repositoryInterface.UpdateAcao(updatedAcao);
+      await repositoryInterface.UpdateAcaoAsync(updatedAcao);
 
       return NoContent();
     }
 
     [HttpDelete("{id}")]
-    public ActionResult DeleteAcao(Guid id)
+    public async Task<ActionResult> DeleteAcaoAsync(Guid id)
     {
-      var existingAcao = repositoryInterface.GetAcao(id);
+      var existingAcao = await repositoryInterface.GetAcaoAsync(id);
 
       if (existingAcao is null)
       {
         return NotFound();
       }
 
-      repositoryInterface.DeleteAcao(id);
+      await repositoryInterface.DeleteAcaoAsync(id);
 
       return NoContent();
     }
