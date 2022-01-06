@@ -7,6 +7,13 @@ docker-compose up --build -d
 
 # Via VS Code
 F5
+
+# Rodar projeto local, somente com o container do mongo executando
+appsettings.json > MongoDbSettings > Host > "localhost"
+
+docker-compose -f docker-compose-mongo.yml up --build -d
+
+F5
 ```
 
 ## Docker run Mongo
@@ -27,6 +34,9 @@ dotnet add package Newtonsoft.Json
 
 # MongoDB
 dotnet add package MongoDB.Driver
+
+# Health Check MongoDB
+dotnet add package AspNetCore.HealthChecks.MongoDb
 ```
 
 
