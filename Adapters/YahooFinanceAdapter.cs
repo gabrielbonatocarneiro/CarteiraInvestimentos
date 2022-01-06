@@ -1,10 +1,5 @@
-using System;
-using System.IO;
-using System.Text;
-using System.Text.Json;
 using CarteiraInvestimentos.Dtos;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace CarteiraInvestimentos.Adapters
 {
@@ -13,6 +8,8 @@ namespace CarteiraInvestimentos.Adapters
     public static CotacaoAcaoYahooFinanceDto Handle(string responseBody)
     {
       var cotacaoConverted = JsonConvert.DeserializeObject<dynamic>(responseBody);
+
+      if (cotacaoConverted.chart.result == null) return null;
 
       dynamic cotacao = cotacaoConverted.chart.result[0].meta;
 

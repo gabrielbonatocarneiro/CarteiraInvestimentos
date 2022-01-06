@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using CarteiraInvestimentos.Dtos;
 using CarteiraInvestimentos.Entities;
 using CarteiraInvestimentos.Helpers;
@@ -14,27 +15,28 @@ namespace CarteiraInvestimentos.Controllers
   [Produces("application/json")]
   public class OperacoesController : ControllerBase
   {
-    private readonly InMemOperacoesInterface repositoryInterfaceOperacao;
-    private readonly InMemAcoesInterface repositoryInterfaceAcao;
+    private readonly OperacoesRepositoryInterface repositoryInterfaceOperacao;
+    private readonly AcoesRepositoryInterface repositoryInterfaceAcao;
 
-    public OperacoesController(InMemOperacoesInterface repositoryInterfaceOperacao, InMemAcoesInterface repositoryInterfaceAcao)
+    public OperacoesController(OperacoesRepositoryInterface repositoryInterfaceOperacao, AcoesRepositoryInterface repositoryInterfaceAcao)
     {
       this.repositoryInterfaceOperacao = repositoryInterfaceOperacao;
       this.repositoryInterfaceAcao = repositoryInterfaceAcao;
     }
 
     [HttpGet]
-    public IEnumerable<OperacaoDto> GetOperacaoes(string? codigoAcao = null)
+    public async Task<IEnumerable<OperacaoDto>> GetOperacaoesAsync(string? codigoAcao = null)
     {
-      var operacoes = repositoryInterfaceOperacao.GetOperacaoes(codigoAcao).Select(operacao => operacao.AsDto());
+      var operacoes = (await repositoryInterfaceOperacao.GetOperacaoesAsync(codigoAcao))
+        .Select(operacao => operacao.AsDto());
 
       return operacoes;
     }
 
     [HttpGet("{id}")]
-    public ActionResult<OperacaoDto> GetOperacao(Guid id)
+    public async Task<ActionResult<OperacaoDto>> GetOperacaoAsync(Guid id)
     {
-      var operacao = repositoryInterfaceOperacao.GetOperacao(id);
+      var operacao = await repositoryInterfaceOperacao.GetOperacaoAsync(id);
 
       if (operacao is null)
       {
@@ -45,9 +47,9 @@ namespace CarteiraInvestimentos.Controllers
     }
 
     [HttpPost("compra")]
-    public ActionResult<OperacaoDto> CreateOperacaoCompra(CreateOperacaoCompraDto operacaoDto)
+    public async Task<ActionResult<OperacaoDto>> CreateOperacaoCompraAsync(CreateOperacaoCompraDto operacaoDto)
     {
-      var acao = repositoryInterfaceAcao.GetAcaoByCodigo(operacaoDto.CodigoAcao);
+      var acao = await repositoryInterfaceAcao.GetAcaoByCodigoAsync(operacaoDto.CodigoAcao);
 
       if (acao is null)
       {
@@ -71,15 +73,15 @@ namespace CarteiraInvestimentos.Controllers
         ValorTotalOperacao = valorTotalOperacao
       };
 
-      repositoryInterfaceOperacao.CreateOperacaoCompra(operacao);
+      await repositoryInterfaceOperacao.CreateOperacaoCompraAsync(operacao);
 
-      return CreatedAtAction(nameof(GetOperacao), new { id = operacao.Id }, operacao.AsDto());
+      return CreatedAtAction(nameof(GetOperacaoAsync), new { id = operacao.Id }, operacao.AsDto());
     }
 
     [HttpPost("venda")]
-    public ActionResult<OperacaoDto> CreateOperacaoVenda(CreateOperacaoVendaDto operacaoDto)
+    public async Task<ActionResult<OperacaoDto>> CreateOperacaoVendaAsync(CreateOperacaoVendaDto operacaoDto)
     {
-      var acao = repositoryInterfaceAcao.GetAcaoByCodigo(operacaoDto.CodigoAcao);
+      var acao = await repositoryInterfaceAcao.GetAcaoByCodigoAsync(operacaoDto.CodigoAcao);
 
       if (acao is null)
       {
@@ -103,9 +105,9 @@ namespace CarteiraInvestimentos.Controllers
         ValorTotalOperacao = valorTotalOperacao
       };
 
-      repositoryInterfaceOperacao.CreateOperacaoCompra(operacao);
+      await repositoryInterfaceOperacao.CreateOperacaoCompraAsync(operacao);
 
-      return CreatedAtAction(nameof(GetOperacao), new { id = operacao.Id }, operacao.AsDto());
+      return CreatedAtAction(nameof(GetOperacaoAsync), new { id = operacao.Id }, operacao.AsDto());
     }
   }
 }

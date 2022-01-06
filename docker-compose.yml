@@ -3,10 +3,24 @@
 version: '3.4'
 
 services:
-  carteirainvestimentos:
-    image: carteirainvestimentos
+  app:
+    container_name: carteira-investimentos
     build:
       context: .
       dockerfile: ./Dockerfile
     ports:
-      - 5000:5000
+      - "5000:5000"
+    depends_on:
+      - mongo    
+  mongo:
+    container_name: mongo-carteira-investimentos
+    image: mongo
+    expose:
+      - "27017"
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodbdata:/data/db
+
+volumes:
+  mongodbdata:
