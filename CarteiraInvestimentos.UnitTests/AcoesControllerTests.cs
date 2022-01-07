@@ -41,7 +41,6 @@ namespace CarteiraInvestimentos.UnitTests
         public async Task GetAcaoAysnc_WithUnexistingAcao_ReturnsNotFound()
         {
             // Arrange
-            var repositoryInterfaceMock = new Mock<AcoesRepositoryInterface>();
             repositoryInterfaceMock.Setup(repo => repo.GetAcaoAsync(It.IsAny<Guid>()))
                 .ReturnsAsync((Acao)null);
 
@@ -89,8 +88,6 @@ namespace CarteiraInvestimentos.UnitTests
 
             // Act
             var result = await controller.CreateAcaoAsync(acaoToCreate);
-
-            Console.WriteLine(result);
 
             // Assert
             var createdAcao = (result.Result as CreatedAtActionResult).Value as AcaoDto;

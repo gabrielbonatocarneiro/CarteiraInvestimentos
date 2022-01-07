@@ -16,7 +16,6 @@ namespace CarteiraInvestimentos.Api.Controllers
   public class AcoesController : ControllerBase
   {
     private readonly AcoesRepositoryInterface repositoryInterface;
-
     private readonly ILogger<AcoesController> logger;
 
     public AcoesController(AcoesRepositoryInterface repositoryInterface, ILogger<AcoesController> logger)

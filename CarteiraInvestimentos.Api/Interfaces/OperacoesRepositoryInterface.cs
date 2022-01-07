@@ -7,9 +7,8 @@ namespace CarteiraInvestimentos.Api.Interfaces
 {
   public interface OperacoesRepositoryInterface
   {
-    Task<IEnumerable<Operacao>> GetOperacaoesAsync(string codigoAcao);
+    Task<IEnumerable<Operacao>> GetOperacaoesAsync(string? codigoAcao = null);
     Task<Operacao> GetOperacaoAsync(Guid id);
-    Task CreateOperacaoCompraAsync(Operacao operacao);
-    Task CreateOperacaoVendaAsync(Operacao operacao);
+    Task CreateOperacaoAsync(Operacao operacao);
   }
 }
