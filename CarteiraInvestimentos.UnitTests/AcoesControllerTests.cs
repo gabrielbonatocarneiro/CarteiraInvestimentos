@@ -100,7 +100,7 @@ namespace CarteiraInvestimentos.UnitTests
         }
 
         [Fact]
-        public async Task UpdateAcaoAsync_WithExistingItem_ReturnsNoContent()
+        public async Task UpdateAcaoAsync_WithExistingAcao_ReturnsNoContent()
         {
             // Arrange
             Acao existingAcao = CreateRandomAcao();
@@ -125,7 +125,7 @@ namespace CarteiraInvestimentos.UnitTests
         }
 
          [Fact]
-        public async Task DeleteAcaoAsync_WithExistingItem_ReturnsNoContent()
+        public async Task DeleteAcaoAsync_WithExistingAcao_ReturnsNoContent()
         {
             // Arrange
             Acao existingAcao = CreateRandomAcao();
