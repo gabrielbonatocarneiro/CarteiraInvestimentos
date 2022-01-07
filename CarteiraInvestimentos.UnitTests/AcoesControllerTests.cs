@@ -41,7 +41,6 @@ namespace CarteiraInvestimentos.UnitTests
         public async Task GetAcaoAysnc_WithUnexistingAcao_ReturnsNotFound()
         {
             // Arrange
-            var repositoryInterfaceMock = new Mock<AcoesRepositoryInterface>();
             repositoryInterfaceMock.Setup(repo => repo.GetAcaoAsync(It.IsAny<Guid>()))
                 .ReturnsAsync((Acao)null);
 
@@ -90,8 +89,6 @@ namespace CarteiraInvestimentos.UnitTests
             // Act
             var result = await controller.CreateAcaoAsync(acaoToCreate);
 
-            Console.WriteLine(result);
-
             // Assert
             var createdAcao = (result.Result as CreatedAtActionResult).Value as AcaoDto;
             createdAcao.Should().BeEquivalentTo(
@@ -103,7 +100,7 @@ namespace CarteiraInvestimentos.UnitTests
         }
 
         [Fact]
-        public async Task UpdateAcaoAsync_WithExistingItem_ReturnsNoContent()
+        public async Task UpdateAcaoAsync_WithExistingAcao_ReturnsNoContent()
         {
             // Arrange
             Acao existingAcao = CreateRandomAcao();
@@ -128,7 +125,7 @@ namespace CarteiraInvestimentos.UnitTests
         }
 
          [Fact]
-        public async Task DeleteAcaoAsync_WithExistingItem_ReturnsNoContent()
+        public async Task DeleteAcaoAsync_WithExistingAcao_ReturnsNoContent()
         {
             // Arrange
             Acao existingAcao = CreateRandomAcao();

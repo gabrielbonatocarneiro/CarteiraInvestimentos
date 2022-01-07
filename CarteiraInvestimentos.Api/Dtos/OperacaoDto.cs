@@ -14,7 +14,7 @@ namespace CarteiraInvestimentos.Api.Dtos
 
     public int Quantidade { get; set; }
 
-    public char TipoOperacao { get; set; }
+    public string TipoOperacao { get; set; }
 
     public DateTimeOffset DataOperacao { get; set; }
 

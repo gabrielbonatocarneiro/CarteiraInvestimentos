@@ -19,12 +19,16 @@ CarteiraInvestimentos.Api > F5
 cd CarteiraInvestimentos.UnitTests && dotnet test
 ```
 
-## Docker run Mongo
-```bash
-docker run -d --rm --name mongocarteirainvestimentos -p 27019:27017 -v mongodbdata:/data/db mongo
-```
+### Resultados dos testes
+![plot](./images/testes.png)
 
-### Comandos executados para criar e atualizar o Projeto durante o desenvolemento
+### Swagger da aplicação
+![plot](./images/swagger.png)
+
+### Container em execução
+![plot](./images/docker.png)
+
+#### Comandos executados para criar e atualizar o Projeto durante o desenvolemento
 ```bash
 # Criar o projeto
 dotnet new webapi -n CarteiraInvestimentos

@@ -7,6 +7,7 @@ using CarteiraInvestimentos.Api.Entities;
 using CarteiraInvestimentos.Api.Helpers;
 using CarteiraInvestimentos.Api.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace CarteiraInvestimentos.Api.Controllers
 {
@@ -17,11 +18,19 @@ namespace CarteiraInvestimentos.Api.Controllers
   {
     private readonly OperacoesRepositoryInterface repositoryInterfaceOperacao;
     private readonly AcoesRepositoryInterface repositoryInterfaceAcao;
+    private readonly ILogger<OperacoesController> logger;
+    private bool runTesting = false;
 
-    public OperacoesController(OperacoesRepositoryInterface repositoryInterfaceOperacao, AcoesRepositoryInterface repositoryInterfaceAcao)
+    public OperacoesController(
+      OperacoesRepositoryInterface repositoryInterfaceOperacao,
+      AcoesRepositoryInterface repositoryInterfaceAcao,
+      ILogger<OperacoesController> logger,
+      bool runTesting = false)
     {
       this.repositoryInterfaceOperacao = repositoryInterfaceOperacao;
       this.repositoryInterfaceAcao = repositoryInterfaceAcao;
+      this.logger = logger;
+      this.runTesting = runTesting;
     }
 
     [HttpGet]
@@ -29,6 +38,8 @@ namespace CarteiraInvestimentos.Api.Controllers
     {
       var operacoes = (await repositoryInterfaceOperacao.GetOperacaoesAsync(codigoAcao))
         .Select(operacao => operacao.AsDto());
+
+      logger.LogInformation($"{DateTime.UtcNow.ToString("hh:mm:ss")}: Recuperou {operacoes.Count()} operações");
 
       return operacoes;
     }
@@ -46,14 +57,23 @@ namespace CarteiraInvestimentos.Api.Controllers
       return operacao.AsDto();      
     }
 
-    [HttpPost("compra")]
-    public async Task<ActionResult<OperacaoDto>> CreateOperacaoCompraAsync(CreateOperacaoCompraDto operacaoDto)
+    [HttpPost]
+    public async Task<ActionResult<OperacaoDto>> CreateOperacaoAsync(CreateOperacaoDto operacaoDto)
     {
-      var acao = await repositoryInterfaceAcao.GetAcaoByCodigoAsync(operacaoDto.CodigoAcao);
+      if (operacaoDto.TipoOperacao != "V" && operacaoDto.TipoOperacao != "C") {
+        return BadRequest("Tipo de operação inválido. Os tipos de operação precisam ser V(venda) ou C(compra).");
+      }
 
-      if (acao is null)
+      dynamic acao = null;
+
+      if (runTesting == false)
       {
-        return NotFound("Código da ação inválido. Não foi possível obter a ação. Favor informar o código correto.");
+        acao = await repositoryInterfaceAcao.GetAcaoByCodigoAsync(operacaoDto.CodigoAcao);
+
+        if (acao is null)
+        {
+          return NotFound("Código da ação inválido. Não foi possível obter a ação. Favor informar o código correto.");
+        }
       }
 
       // Calculamos o total da operação
@@ -65,47 +85,15 @@ namespace CarteiraInvestimentos.Api.Controllers
       {
         Id = Guid.NewGuid(),
         CodigoAcao = operacaoDto.CodigoAcao,
-        RazaoSocialAcaoEmpresa = acao.RazaoSocialEmpresa,
+        RazaoSocialAcaoEmpresa = acao is null ? "Não informado" : acao.RazaoSocialEmpresa,
         PrecoAcao = operacaoDto.PrecoAcao,
         Quantidade = operacaoDto.Quantidade,
-        TipoOperacao = 'C',
+        TipoOperacao = operacaoDto.TipoOperacao,
         DataOperacao = DateTimeOffset.UtcNow,
         ValorTotalOperacao = valorTotalOperacao
       };
 
-      await repositoryInterfaceOperacao.CreateOperacaoCompraAsync(operacao);
-
-      return CreatedAtAction(nameof(GetOperacaoAsync), new { id = operacao.Id }, operacao.AsDto());
-    }
-
-    [HttpPost("venda")]
-    public async Task<ActionResult<OperacaoDto>> CreateOperacaoVendaAsync(CreateOperacaoVendaDto operacaoDto)
-    {
-      var acao = await repositoryInterfaceAcao.GetAcaoByCodigoAsync(operacaoDto.CodigoAcao);
-
-      if (acao is null)
-      {
-        return NotFound("Código da ação inválido. Não foi possível obter a ação. Favor informar o código correto.");
-      }
-
-      // Calculamos o total da operação
-      var valorOperacao = operacaoDto.Quantidade * operacaoDto.PrecoAcao;
-      var custoOperacao = CalculoCustoOperacao.Handle(valorOperacao);
-      var valorTotalOperacao = valorOperacao + custoOperacao;
-
-      Operacao operacao = new()
-      {
-        Id = Guid.NewGuid(),
-        CodigoAcao = operacaoDto.CodigoAcao,
-        RazaoSocialAcaoEmpresa = acao.RazaoSocialEmpresa,
-        PrecoAcao = operacaoDto.PrecoAcao,
-        Quantidade = operacaoDto.Quantidade,
-        TipoOperacao = 'V',
-        DataOperacao = DateTimeOffset.UtcNow,
-        ValorTotalOperacao = valorTotalOperacao
-      };
-
-      await repositoryInterfaceOperacao.CreateOperacaoCompraAsync(operacao);
+      await repositoryInterfaceOperacao.CreateOperacaoAsync(operacao);
 
       return CreatedAtAction(nameof(GetOperacaoAsync), new { id = operacao.Id }, operacao.AsDto());
     }

@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace CarteiraInvestimentos.Api.Entities
 {
@@ -14,7 +15,7 @@ namespace CarteiraInvestimentos.Api.Entities
 
     public int Quantidade { get; set; }
 
-    public char TipoOperacao { get; set; }
+    public string TipoOperacao { get; set; }
 
     public DateTimeOffset DataOperacao { get; set; }
 

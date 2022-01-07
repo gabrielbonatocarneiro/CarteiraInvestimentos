@@ -10,7 +10,7 @@ namespace CarteiraInvestimentos.Api.Repositories
 {
   public class MongoDbOperacaoRepository : OperacoesRepositoryInterface
   {
-    private const string databaseName = "admin";
+    private const string databaseName = "carteirainvestimentos";
 
     private const string collectionName = "operacoes";
 
@@ -24,7 +24,7 @@ namespace CarteiraInvestimentos.Api.Repositories
       operacoesCollection = database.GetCollection<Operacao>(collectionName);
     }
 
-    public async Task<IEnumerable<Operacao>> GetOperacaoesAsync(string codigoAcao)
+    public async Task<IEnumerable<Operacao>> GetOperacaoesAsync(string? codigoAcao = null)
     {
       if (codigoAcao is null) {
         return await operacoesCollection.Find(new BsonDocument()).ToListAsync();
@@ -40,12 +40,7 @@ namespace CarteiraInvestimentos.Api.Repositories
       return await operacoesCollection.Find(filter).SingleOrDefaultAsync();
     }
 
-    public async Task CreateOperacaoCompraAsync(Operacao operacao)
-    {
-      await operacoesCollection.InsertOneAsync(operacao);
-    }
-
-    public async Task CreateOperacaoVendaAsync(Operacao operacao)
+    public async Task CreateOperacaoAsync(Operacao operacao)
     {
       await operacoesCollection.InsertOneAsync(operacao);
     }

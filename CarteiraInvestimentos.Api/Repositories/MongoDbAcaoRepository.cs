@@ -10,7 +10,7 @@ namespace CarteiraInvestimentos.Api.Repositories
 {
   public class MongoDbAcaoRepository : AcoesRepositoryInterface
   {
-    private const string databaseName = "admin";
+    private const string databaseName = "carteirainvestimentos";
 
     private const string collectionName = "acoes";
 
