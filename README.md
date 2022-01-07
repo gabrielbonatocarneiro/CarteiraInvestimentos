@@ -3,7 +3,7 @@
 cd CarteiraInvestimentos.Api && dotnet run
 
 # Via Docker
-cd CarteiraInvestimentos.Api && docker-compose up --build -d
+cd CarteiraInvestimentos.Api && docker-compose -f docker-compose-dev up --build -d
 
 # Via VS Code
 CarteiraInvestimentos.Api > F5
